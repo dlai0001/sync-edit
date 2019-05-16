@@ -7,11 +7,11 @@ $ yarn install
 $ yarn run dev  # runs dev server.
 ```
 
-```shell
-"client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-"server": "nodemon src/server/index.js",
-"dev": "concurrently \"npm run server\" \"npm run client\""
-```
+Available commands
+* `start` - run production mode.
+* `dev` - run development server.
+* `test` - run unit tests
+
 
 ## Technologies used
 * GraphQL Yoga : GraphQL API
