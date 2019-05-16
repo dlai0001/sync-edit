@@ -18,3 +18,4 @@ $ yarn run dev  # runs dev server.
 * Express : Backend
 * React 16 : Front end Javascript
 * Bulma : CSS Framework
+* Jest : Unit testing framework
