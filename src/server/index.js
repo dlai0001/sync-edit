@@ -22,7 +22,6 @@ graphqlserver.express.get('/api/getUsername', (req, res) => res.send({ username:
 
 graphqlserver.express.use(express.static('dist'));
 
-// app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
 graphqlserver.start(
     {
         port: 8080,
