@@ -1,5 +1,7 @@
 # simple react, graphql, app.
+ [![Build Status][travis-image]][travis-url]
 Simple Proof of concept of authentication, pub/sub via graphql, with react front end.
+
 
 ## Getting started
 ```shell
