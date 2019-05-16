@@ -43,8 +43,9 @@ module.exports = {
 
     automock: false,
     setupFiles: [
-        "./__mocks__/setupFetchMock.js",
+        "./__mocks__/setupFetchMock.js",                       // mock fetch
         "./__mocks__/setupEnzymeAdapter.js",
+        '<rootDir>/node_modules/regenerator-runtime/runtime',  // needed to make jest compatible with async/await
     ]
 
 };
