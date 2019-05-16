@@ -1,5 +1,5 @@
 # simple react, graphql, app.
- [![Build Status][travis-image]][travis-url]
+[![Build Status](https://travis-ci.org/dlai0001/sync-edit.svg?branch=master)](https://travis-ci.org/dlai0001/sync-edit)
 Simple Proof of concept of authentication, pub/sub via graphql, with react front end.
 
 
