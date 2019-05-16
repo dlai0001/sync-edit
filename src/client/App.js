@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { Columns, Button } from 'react-bulma-components/full';
+import { request } from 'graphql-request'
 
 import './app.css';
 import ReactImage from './react.png';
@@ -8,10 +9,13 @@ import ReactImage from './react.png';
 export default class App extends Component {
     state = { username: null };
 
-    componentDidMount() {
-        fetch('/api/getUsername')
-            .then(res => res.json())
-            .then(user => this.setState({ username: user.username }));
+    async componentDidMount() {
+        const query = `{
+            username
+          }`
+
+        const data = await request('/graphql', query);
+        this.setState({ username: data.username });
     }
 
     render() {

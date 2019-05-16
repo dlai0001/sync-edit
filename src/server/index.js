@@ -5,20 +5,20 @@ const { GraphQLServer } = require('graphql-yoga');
 
 const typeDefs = `
   type Query {
-    hello(name: String): String!
+    hello(name: String): String!,
+    username: String!
   }
 `
 
 const resolvers = {
     Query: {
         hello: (_, { name }) => `Hello ${name || 'World'}`,
+        username: (_, {}) => os.userInfo().username,
     },
 }
 
 
 const graphqlserver = new GraphQLServer({ typeDefs, resolvers });
-
-graphqlserver.express.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
 graphqlserver.express.use(express.static('dist'));
 
