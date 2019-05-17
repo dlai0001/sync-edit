@@ -43,9 +43,13 @@ module.exports = {
 
     automock: false,
     setupFiles: [
-        "./__mocks__/setupFetchMock.js",                       // mock fetch
-        "./__mocks__/setupEnzymeAdapter.js",
+        // Build related.  These run first so we can use them in our other test setup.
         '<rootDir>/node_modules/regenerator-runtime/runtime',  // needed to make jest compatible with async/await
+        // Mocks needs for webapp unit testing.
+        "./__mocks__/setupFetchMock.js",
+        "./__mocks__/setupEnzymeAdapter.js",
+        // Setup env
+        "./__mocks__/setupEnv.js",        
     ]
 
 };
