@@ -4,6 +4,7 @@ node_js:
   - 12
 
 script:
+  - sudo apt-get install sqlite3 libsqlite3-dev
   - npm install
   - npm run test
 
