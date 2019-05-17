@@ -11,7 +11,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --colors"
+    "test:coverage": "jest --coverage --colors",
+    "test:one": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "author": "Sandeep Raveesh",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "react": "^16.5.2",
     "react-bulma-components": "2.3.0",
     "react-dom": "^16.5.2",
+    "react-router-dom": "^5.0.0",
     "sqlite3": "^4.0.8"
   },
   "devDependencies": {
