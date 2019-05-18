@@ -17,12 +17,12 @@ class UserService {
     }
 
     /**
-     * 
+     * Creates a new user.
      * @param {String} name full name of user
      * @param {String} phoneNumber valid phone number string
      * @param {String} pin numeric string 4-10 digits long
      */
-    async createUser(name, phoneNumber, pin) {
+    async createUser(name, phoneNumber, pin, createdBy=null) {
         // Validate phone number
         const parsedNumber = phoneUtil.parseAndKeepRawInput(phoneNumber, 'US');
         if (!phoneUtil.isPossibleNumber(parsedNumber)) {
@@ -65,7 +65,7 @@ class UserService {
         
         await this.knex(USER_TABLE).insert(newUser);
         
-        await auditService.log(newUser, 'Created User', id);
+        await auditService.log(newUser, 'Created User', createdBy || id);
 
         return newUser;
     }
