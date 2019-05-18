@@ -4,9 +4,9 @@ node_js:
   - 12
 
 script:
-  - sudo apt-get install libstdc++6
-  - sudo apt-get install sqlite3 libsqlite3-dev
-  - npm install
+  - sudo apt-get install -y libstdc++6
+  - sudo apt-get install -y sqlite3 libsqlite3-dev
+  - npm ci
   - npm run test
 
 branches:
