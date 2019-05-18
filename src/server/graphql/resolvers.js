@@ -1,3 +1,6 @@
+const os = require('os');
+const userService = require('./services/user-service');
+
 const resolvers = {
     Query: {
         hello: (_, { name }) => `Hello ${name || 'World'}`,

@@ -1,12 +1,10 @@
 const express = require('express');
-const os = require('os');
 
 const { GraphQLServer } = require('graphql-yoga');
 const { formatError } = require('apollo-errors');
 
 const typeDefs = require('./graphql/typedefs');
 
-const userService = require('./services/user-service');
 const resolvers = require('./graphql/resolvers');
 
 
