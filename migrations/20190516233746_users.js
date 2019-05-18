@@ -7,11 +7,12 @@ exports.up = function (knex) {
 
             // data fields
             table.string('name', 255).notNullable();
-            table.string('phone_number', 255).notNullable();
+            table.string('phoneNumber', 255).notNullable();
             table.string('pin', 255).notNullable();
 
             // Used to track latest version.
-            table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+            table.timestamp('createdAt', { precision: 6 }).notNullable().defaultTo(knex.fn.now());
+            table.boolean('isOld').notNullable().defaultTo(false);
         });
 };
 
