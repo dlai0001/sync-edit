@@ -1,3 +1,4 @@
+const sinon = require('sinon');
 const knex = require('../db');
 const { ValidationError } = require('../errors');
 
@@ -6,7 +7,7 @@ describe('user-service', () => {
 
     beforeEach(async () => {
         // Reset DB state before tests.
-        await knex.migrate.latest();        
+        await knex.migrate.latest();
         await knex.seed.run();
     });
 
@@ -23,26 +24,32 @@ describe('user-service', () => {
             throw new Error('should throw error');
         } catch (err) {            
             expect(err instanceof ValidationError).toBeTruthy();
-        }      
+        }
     });
 
     it('should not allow duplicate phone numbers', async () => {
-        await userService.createUser('Bob', '8003330000', '0000');        
+        await userService.createUser('Bob', '8003330000', '0000');
         try {
             await userService.createUser('Bob', '8003330000', '0000');
             throw new Error('should throw error.');
         } catch (err) {
+            debugger;
             expect(err instanceof ValidationError).toBeTruthy();
         }
     });
 
-    it('should not allow short pins', async () => {        
-        let hasError = false;
+    it('should not allow short pins', async () => {
         try {
             await userService.createUser('Bob', '8003330000', '000');
             throw new Error('should throw error.');
         } catch (err) {
             expect(err instanceof ValidationError).toBeTruthy();
         }
+    });
+
+    it('should audit log new users created', async () => {
+        const user = await userService.createUser('Bob', '8003330000', '0000');
+        const auditEntries = await knex.select('*').from('audit_log').where({ userId: user.id });
+        expect(auditEntries.length).toBe(1);
     });
 });

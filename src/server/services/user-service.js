@@ -1,16 +1,27 @@
-const knexInstance = require('../db');
-const { ValidationError } = require('../errors');
 const uuid = require('uuid/v4');
 const PNF = require('google-libphonenumber').PhoneNumberFormat;
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
+const { ValidationError } = require('../errors');
+
+const knex = require('../db');
+const auditService = require('./audit-service');
+
 const USER_TABLE = 'users';
 
 class UserService {
-    constructor(knex = knexInstance) {
+
+    constructor() {
         this.knex = knex;
+        this.auditService = auditService;
     }
 
+    /**
+     * 
+     * @param {String} name full name of user
+     * @param {String} phoneNumber valid phone number string
+     * @param {String} pin numeric string 4-10 digits long
+     */
     async createUser(name, phoneNumber, pin) {
         // Validate phone number
         const parsedNumber = phoneUtil.parseAndKeepRawInput(phoneNumber, 'US');
@@ -31,22 +42,30 @@ class UserService {
                 data: {
                     phoneNumber: `Phone number must be unique. ${phoneNumber} already exists.`,
                 }
-            });            
+            });
         }
 
         // Validate PIN, should be at least 4 digits        
-        if (!/\d{4,}/.test(pin)) {
+        if (!/\d{4,10}/.test(pin)) {
             throw new ValidationError({
                 data: {
-                    pin: 'Must be 4 or more numeric digits',
+                    pin: 'Must between 4 and 10 numeric digits',
                 }
             });
         }
 
         const id = uuid();
-        const newUser = { id, name, phoneNumber: toNumber, pin };
-
-        await this.knex.insert(newUser).into(USER_TABLE);
+        const newUser = {
+            id,
+            name,
+            phoneNumber: toNumber,
+            pin,
+            timestamp: Date.now()
+        };
+        
+        await this.knex(USER_TABLE).insert(newUser);
+        
+        await auditService.log(newUser, 'Created User', id);
 
         return newUser;
     }

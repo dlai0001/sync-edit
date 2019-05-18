@@ -8,11 +8,10 @@ exports.up = function (knex) {
             // data fields
             table.string('name', 255).notNullable();
             table.string('phoneNumber', 255).notNullable();
-            table.string('pin', 255).notNullable();
+            table.string('pin', 10).notNullable();
 
             // Used to track latest version.
-            table.timestamp('createdAt', { precision: 6 }).notNullable().defaultTo(knex.fn.now());
-            table.boolean('isOld').notNullable().defaultTo(false);
+            table.integer('timestamp').notNullable();
         });
 };
 

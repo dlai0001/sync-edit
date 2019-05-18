@@ -14,7 +14,7 @@ describe('DB', () => {
                 name: 'David Lai',
             })
             .limit(1);
-        console.log(users);
+
         expect(users[0].pin).toBe('0000');
     });
 });
