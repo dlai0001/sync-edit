@@ -7,7 +7,7 @@ script:
   - sudo apt-get install -y libstdc++6
   - sudo apt-get install -y sqlite3 libsqlite3-dev
   - npm ci
-  - npm install sqlite3 --build-from-source
+  - npm install sqlite3 --build-from-source &> /dev/null
   - npm run test
 
 branches:
