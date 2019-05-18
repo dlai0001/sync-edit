@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 
-import { request } from 'graphql-request'
-
-import ReactImage from './react.png';
 import {Switch, Route} from 'react-router-dom';
 
 import Home from './containers/Home';
