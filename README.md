@@ -31,6 +31,13 @@ $ heroku login
 $ git push heroku master
 ```
 
+Migrating on production.
+``` bash
+$ heroku login
+$ heroku ps:exec    # opens shell to heroku app.
+$ npm run migrate
+```
+
 ## Technologies used
 * GraphQL Yoga : GraphQL API
 * Express : Backend
