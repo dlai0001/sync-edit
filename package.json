@@ -1,7 +1,7 @@
 {
-  "name": "simple-react-full-stack",
+  "name": "sync-edit",
   "version": "1.0.0",
-  "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
+  "description": "proof of concept realtime collaborative edit",
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -14,7 +14,7 @@
     "test:coverage": "jest --coverage --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
-  "author": "Sandeep Raveesh",
+  "author": "David Lai",
   "license": "ISC",
   "dependencies": {
     "apollo-errors": "^1.9.0",
