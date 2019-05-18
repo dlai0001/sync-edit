@@ -1,0 +1,10 @@
+
+.has-bg-img { 
+    background: url('../assets/dinner.jpg') center center; 
+    background-size:cover; 
+}
+
+.home-title {
+    background: rgba(0,128,128,0.8);
+    padding: 5em;
+}

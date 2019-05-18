@@ -1,0 +1,11 @@
+.main-nav {
+    background: #106b03;
+}
+
+.main-nav .navbar-brand img {
+    transform: scale(1.5, 1.5);
+}
+
+nav .navbar-brand a.navbar-burger span {
+    background-color: white;
+}
