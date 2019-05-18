@@ -5,6 +5,10 @@
 const { createError } = require('apollo-errors');
 
 
-module.ValidationError = createError('ValidationError', {
+const ValidationError = createError('ValidationError', {
     message: 'A validation error has ocurred.'
 });
+
+module.exports = {
+    ValidationError,
+};

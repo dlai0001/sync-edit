@@ -1,5 +1,5 @@
 const knexInstance = require('../db');
-import { ValidationError } from '../errors';
+const { ValidationError } = require('../errors');
 const uuid = require('uuid/v4');
 const PNF = require('google-libphonenumber').PhoneNumberFormat;
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
@@ -44,7 +44,6 @@ class UserService {
         }
 
         const id = uuid();
-        debugger;
         const newUser = { id, name, phoneNumber: toNumber, pin };
 
         await this.knex.insert(newUser).into(USER_TABLE);
