@@ -12,7 +12,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --colors",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback"
   },
   "author": "David Lai",
   "license": "ISC",
