@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 
 const { GraphQLServer } = require('graphql-yoga');
@@ -14,6 +15,10 @@ const graphqlserver = new GraphQLServer({
 });
 
 graphqlserver.express.use(express.static('dist'));
+// if non existant route, route to web app.
+graphqlserver.express.get('*', (_req,res) =>{
+    res.sendFile(path.join(__dirname+'../../../dist/index.html'));
+});
 
 graphqlserver.start(
     {
