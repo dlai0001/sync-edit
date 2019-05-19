@@ -1,4 +1,3 @@
-const sinon = require('sinon');
 const knex = require('../db');
 const { ValidationError } = require('../errors');
 

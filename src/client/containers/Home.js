@@ -42,6 +42,7 @@ export default class Home extends Component {
                     <div className="hero-body">
                         <div className="container home-title">
                             <h1 className="title">
+                                <i className="fas fa-mortar-pestle"></i>&nbsp;
                                 Recipe Sync
                             </h1>
                             <h2 className="subtitle">

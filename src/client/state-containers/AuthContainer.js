@@ -6,6 +6,7 @@ const client = new ApolloClient();
 export default class AuthContainer extends Container {
     state = {
         isAuthenticated: false,
+        errors: null,
     };
 
     /**
@@ -15,8 +16,12 @@ export default class AuthContainer extends Container {
      * @param {String} registrationParams.pin
      * @param {String} registrationParams.phoneNumber
      */
-    async register(registrationParams) {
+    register(registrationParams) {
         console.log('registered called', registrationParams);
+        this.setState({ 
+            ...this.register.state,
+            errors: null,
+        });
 
         const REGISTER_USER = gql`
             mutation RegisterUser($name:String!, $pin:String!, $phoneNumber:String!) {
@@ -24,20 +29,23 @@ export default class AuthContainer extends Container {
                     id
                 }
             }
-        `;
-        try {
+        `;        
 
-            const response = await client.mutate({
-                mutation: REGISTER_USER,
-                variables: registrationParams,
-            });
-            if (get(response, 'data.registerUser.id')) {
-                this.setState({ isAuthenticated: true });
+        return client.mutate({
+            mutation: REGISTER_USER,
+            variables: registrationParams,
+        })
+        .then(resp => {
+            if (get(resp, 'data.registerUser.id')) {
+                this.setState({ 
+                    ...this.register.state,
+                    isAuthenticated: true 
+                });
             }
-        } catch (err) {
-            console.error(err);
-            console.log(err.data);
-            debugger;
-        }
+        })
+        .catch(err => {
+            const errs = err.graphQLErrors.map(x => Object.values(x.data)[0]);
+            throw new Error(errs[0]);
+        })
     }
 }

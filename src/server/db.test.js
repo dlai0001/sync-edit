@@ -15,6 +15,6 @@ describe('DB', () => {
             })
             .limit(1);
 
-        expect(users[0].pin).toBe('0000');
+        expect(users[0].phoneNumber).toBe('805-555-5555');
     });
 });

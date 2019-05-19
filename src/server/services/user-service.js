@@ -1,4 +1,6 @@
 const uuid = require('uuid/v4');
+const bcrypt = require('bcrypt');
+
 const PNF = require('google-libphonenumber').PhoneNumberFormat;
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
@@ -6,6 +8,8 @@ const { ValidationError } = require('../errors');
 
 const knex = require('../db');
 const auditService = require('./audit-service');
+
+const hashRounds = process.env.HASH_ROUNDS || 10;
 
 const USER_TABLE = 'users';
 
@@ -53,13 +57,15 @@ class UserService {
                 }
             });
         }
+        // encrypt pin into one way hash.
+        const pinHash = await bcrypt.hash(pin, hashRounds);
 
         const id = uuid();
         const newUser = {
             id,
             name,
             phoneNumber: toNumber,
-            pin,
+            pin: pinHash,
             timestamp: Date.now()
         };
         

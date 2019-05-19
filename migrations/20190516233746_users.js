@@ -6,12 +6,14 @@ exports.up = function (knex) {
             table.string('id');            
 
             // data fields
-            table.string('name', 255).notNullable();
-            table.string('phoneNumber', 255).notNullable();
-            table.string('pin', 10).notNullable();
+            table.string('name').notNullable();
+            table.string('phoneNumber').notNullable();
+            table.string('pin').notNullable();
 
             // Used to track latest version.
             table.integer('timestamp').notNullable();
+            // Tracks deleted.  If latest version has deleted timestamp, then considered deleted.
+            table.timestamp('deleted');
         });
 };
 

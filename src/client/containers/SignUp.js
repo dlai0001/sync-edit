@@ -41,15 +41,15 @@ export default () => (
                     <Formik
                         initialValues={{ name: '', pin: '', phoneNumber: '' }}
                         validationSchema={SignupSchema}
-                        onSubmit={ async (values, actions) => {                            
-                            try {
-                                await auth.register(values);
-                                console.log('successfully')
+                        onSubmit={ (values, actions) => {                            
+                            auth.register(values)
+                            .then(() => {
                                 actions.setSubmitting(false);
-                            } catch(err) {                                
+                            })
+                            .catch(err => {
                                 actions.setStatus({serverError: err.message});
                                 actions.setSubmitting(false);
-                            }
+                            });
                         }}
                         render={(props) => (
                             <form onSubmit={props.handleSubmit}>
