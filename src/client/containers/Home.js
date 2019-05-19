@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
-import { request } from 'graphql-request'
+import ApolloClient from 'apollo-boost';
+import gql from 'graphql-tag';
+
+const client = new ApolloClient();
 
 import './Home.css';
 
@@ -12,8 +15,20 @@ export default class App extends Component {
             username
           }`
 
-        const data = await request('/graphql', query);
-        this.setState({ username: data.username });
+        //const data = await request('/graphql', query);
+        try {
+            const response = await client.query({
+                query: gql`
+                    query {
+                        username
+                    }                  
+                `,
+            });
+            this.setState({ username: response.data.username });
+        } catch (err) {
+            console.error(err);
+            this.setState({ username: 'unavailable' })
+        }
     }
 
     render() {

@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
-import { request } from 'graphql-request'
-
-
+import ApolloClient, { gql } from 'apollo-boost';
+import { get } from 'lodash';
+const client = new ApolloClient();
 
 export default class AuthContainer extends Container {
     state = {
@@ -17,6 +17,25 @@ export default class AuthContainer extends Container {
      */
     async register(registrationParams) {
         console.log('registered called', registrationParams);
-        throw new Error("testing errors");
+
+        const REGISTER_USER = gql`
+            mutation RegisterUser($name:String!, $pin:String!, $phoneNumber:String!) {
+                registerUser(name:$name, pin:$pin, phoneNumber:$phoneNumber) {
+                    id
+                }
+            }
+        `;
+        try {
+
+            const response = await client.mutate({
+                mutation: REGISTER_USER,
+                variables: registrationParams,
+            });
+            if (get(response, 'data.registerUser.id')) {
+                this.setState({ isAuthenticated: true });
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 }

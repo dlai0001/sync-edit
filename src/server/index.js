@@ -8,6 +8,11 @@ const typeDefs = require('./graphql/typedefs');
 
 const resolvers = require('./graphql/resolvers');
 
+const GRAPHQL_PATHS = [
+    '/playground',
+    '/subscriptions',
+    '/graphql',
+];
 
 const graphqlserver = new GraphQLServer({ 
     typeDefs,
@@ -16,7 +21,11 @@ const graphqlserver = new GraphQLServer({
 
 graphqlserver.express.use(express.static('dist'));
 // if non existant route, route to web app.
-graphqlserver.express.get('*', (_req,res) =>{
+
+graphqlserver.express.get('*', (req,res, next) =>{
+    // exclude graphql paths
+    if (GRAPHQL_PATHS.includes(req.path))
+        return next();
     res.sendFile(path.join(__dirname+'../../../dist/index.html'));
 });
 
