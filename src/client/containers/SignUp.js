@@ -25,7 +25,9 @@ const SignupSchema = Yup.object().shape({
         .required('Required'),
 });
 
-
+/**
+ * Signup page
+ */
 export default () => (
     <Subscribe to={[AuthContainer]}>
         {auth => (

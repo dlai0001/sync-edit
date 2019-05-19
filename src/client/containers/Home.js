@@ -7,7 +7,10 @@ const client = new ApolloClient();
 
 import './Home.css';
 
-export default class App extends Component {
+/**
+ * Home - Entry point for unauthenticated.
+ */
+export default class Home extends Component {
     state = { username: null };
 
     async componentDidMount() {

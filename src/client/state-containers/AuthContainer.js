@@ -36,6 +36,8 @@ export default class AuthContainer extends Container {
             }
         } catch (err) {
             console.error(err);
+            console.log(err.data);
+            debugger;
         }
     }
 }
