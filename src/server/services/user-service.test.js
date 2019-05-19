@@ -25,7 +25,16 @@ describe('user-service', () => {
         });
 
         it('should raise error for deleted user', async () => {
-            knex.insert({ id: '25795751-b418-480c-a09b-9712069e8b31', name: 'David Lai', phoneNumber: '+18055555555', deleted: new Date() });
+            // Simulate a delete by inserting something with delete
+            await knex.insert({
+                id: '25795751-b418-480c-a09b-9712069e8b31',
+                pin: '242423423',
+                name: 'David Lai',
+                phoneNumber: '+18055555555',
+                deleted: 1558254999859,
+            })
+            .into('users');
+
             try {
                 await userService.getUserByPhoneNumber('18055555555');
             } catch(err) {
@@ -53,7 +62,7 @@ describe('user-service', () => {
                 await userService.createUser('Bob', '123', '0000');
                 throw new Error('should throw error');
             } catch (err) {
-                expect(err).toBeInstanceOf(ValidationError);
+                return expect(err).toBeInstanceOf(ValidationError);
             }
         });
 
@@ -63,7 +72,7 @@ describe('user-service', () => {
                 await userService.createUser('Bob', '8003330000', '0000');
                 throw new Error('should throw error.');
             } catch (err) {
-                expect(err).toBeInstanceOf(ValidationError);
+                return expect(err).toBeInstanceOf(ValidationError);
             }
         });
 
@@ -72,14 +81,14 @@ describe('user-service', () => {
                 await userService.createUser('Bob', '8003330000', '000');
                 throw new Error('should throw error.');
             } catch (err) {
-                expect(err).toBeInstanceOf(ValidationError);
+                return expect(err).toBeInstanceOf(ValidationError);
             }
         });
 
         it('should create audit log entry when new users are created', async () => {
             const user = await userService.createUser('Bob', '8003330000', '0000');
             const auditEntries = await knex.select('*').from('audit_log').where({ userId: user.id });
-            expect(auditEntries.length).toBe(1);
+            return expect(auditEntries.length).toBe(1);
         });
     });
 

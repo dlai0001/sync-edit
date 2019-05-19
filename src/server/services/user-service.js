@@ -26,7 +26,6 @@ class UserService {
             .where({'phoneNumber':formattedPhoneNumber})
             .orderBy('timestamp', 'DESC')
             .limit(1);
-        debugger;
      
         if (user.length == 0 || user[0].deleted) {
             throw new NotFoundError(`Unable to find user by number: ${formattedPhoneNumber}`);
