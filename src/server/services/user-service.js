@@ -65,8 +65,7 @@ class UserService {
             id,
             name,
             phoneNumber: toNumber,
-            pin: pinHash,
-            timestamp: Date.now()
+            pin: pinHash,            
         };
         
         await this.knex(USER_TABLE).insert(newUser);
