@@ -35,7 +35,7 @@ Migrating on production.
 ``` bash
 $ heroku login
 $ heroku ps:exec    # opens shell to heroku app.
-$ npm run migrate
+$ DATABASE_URL='insert_url_to_db' npm run migrate  # this env var is not set in heroku ps:exec shell.
 ```
 
 ## Technologies used

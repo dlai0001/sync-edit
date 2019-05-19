@@ -42,14 +42,14 @@ export default () => (
                         initialValues={{ name: '', pin: '', phoneNumber: '' }}
                         validationSchema={SignupSchema}
                         onSubmit={ (values, actions) => {                            
-                            auth.register(values)
-                            .then(() => {
-                                actions.setSubmitting(false);
-                            })
-                            .catch(err => {
-                                actions.setStatus({serverError: err.message});
-                                actions.setSubmitting(false);
-                            });
+                            // auth.register(values)
+                            // .then(() => {
+                            //     actions.setSubmitting(false);
+                            // })
+                            // .catch(err => {
+                            //     actions.setStatus({serverError: err.message});
+                            //     actions.setSubmitting(false);
+                            // });
                         }}
                         render={(props) => (
                             <form onSubmit={props.handleSubmit}>
@@ -83,11 +83,11 @@ export default () => (
                                 />
 
                                 <div className="field">
-                                    <button type="submit" className="button is-primary">
+                                    <button type="submit" 
+                                    className={"button is-primary " + (props.isSubmitting?'is-loading':'')}>
                                         Register
-                            </button>
+                                    </button>
                                 </div>
-                                <button type="submit">Submit</button>
                             </form>
                         )}
                     />

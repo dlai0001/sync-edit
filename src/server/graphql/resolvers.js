@@ -10,7 +10,7 @@ const resolvers = {
         registerUser: async (_, { name, pin, phoneNumber }) => {
             const user = await userService.createUser(name, phoneNumber, pin);
             return user;
-        },
+        },        
     }
 };
 
