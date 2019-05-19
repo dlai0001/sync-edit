@@ -34,6 +34,20 @@ class UserService {
         return user[0];
     }
 
+    async getUserById(userId) {
+        const user = await this._knex.select('*')
+            .from(USER_TABLE)
+            .where({'id':userId})
+            .orderBy('timestamp', 'DESC')
+            .limit(1);
+     
+        if (user.length == 0 || user[0].deleted) {
+            throw new NotFoundError(`Unable to find user id: ${userId}`);
+        }
+
+        return user[0];
+    }
+
     /**
      * Creates a new user.
      * @param {String} name full name of user

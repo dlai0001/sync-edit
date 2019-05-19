@@ -46,3 +46,6 @@ $ DATABASE_URL='insert_url_to_db' npm run migrate  # this env var is not set in 
 * Jest : Unit testing framework
 * Heroku : hosting
 * TravisCi : Continuous integration
+
+# Troubleshooting
+* If you get failures connecting to Sqlite3, try installing it using build source option. `$ npm install sqlite3 --build-from-source`
