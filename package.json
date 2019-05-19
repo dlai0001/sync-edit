@@ -33,6 +33,7 @@
     "react-router-dom": "^5.0.0",
     "sinon": "^7.3.2",
     "sqlite3": "^4.0.8",
+    "unstated": "^2.1.1",
     "uuid": "^3.3.2",
     "yup": "^0.27.0"
   },
