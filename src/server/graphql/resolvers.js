@@ -1,5 +1,6 @@
 const os = require('os');
 const userService = require('../services/user-service');
+const authService = require('../services/auth-service');
 
 const resolvers = {
     Query: {
@@ -7,10 +8,18 @@ const resolvers = {
         username: (_, { }) => os.userInfo().username,
     },
     Mutation: {
-        registerUser: async (_, { name, pin, phoneNumber }) => {
+        authRegisterUser: async (_, { name, pin, phoneNumber }) => {
             const user = await userService.createUser(name, phoneNumber, pin);
-            return user;
-        },        
+            const tokens = await authService.generateTokens(user);
+            return {
+                user,
+                tokens,
+            };
+        },
+        authRefreshTokens: async (_, { refreshToken }) => {
+            const tokens = await authService.refreshTokens(refreshToken);
+            return tokens;
+        }
     }
 };
 

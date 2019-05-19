@@ -7,9 +7,17 @@ class AuditService {
         this.knex = knex;
     }
 
-    async log(user, action, data = '') {
+    /**
+     * Log an action to the access log.
+     * @param {Integer|Object} userOrUserId 
+     * @param {String} action 
+     * @param {String} data - additional context data we want to add.
+     */
+    async log(userOrUserId, action, data = '') {
+        const userId = userOrUserId.id || userOrUserId;
+
         const auditEntry = {
-            userId: user.id,
+            userId,
             action,
             data,
         };

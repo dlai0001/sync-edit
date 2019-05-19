@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import { Subscribe } from 'unstated';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import AuthContainer from '../state-containers/AuthContainer';
 import SimpleTextInputField from '../components/SimpleTextInputField';
@@ -32,7 +32,7 @@ export default () => (
     <Subscribe to={[AuthContainer]}>
         {auth => (
             <div className="container">
-                { auth.state.isAuthenticated && (
+                {auth.state.isAuthenticated && (
                     //Redirect to dashboard when registration successful and we get authenticated.
                     <Redirect to="/dashboard"></Redirect>
                 )}
@@ -41,15 +41,15 @@ export default () => (
                     <Formik
                         initialValues={{ name: '', pin: '', phoneNumber: '' }}
                         validationSchema={SignupSchema}
-                        onSubmit={ (values, actions) => {                            
-                            // auth.register(values)
-                            // .then(() => {
-                            //     actions.setSubmitting(false);
-                            // })
-                            // .catch(err => {
-                            //     actions.setStatus({serverError: err.message});
-                            //     actions.setSubmitting(false);
-                            // });
+                        onSubmit={(values, actions) => {
+                            auth.register(values)
+                                .then(() => {
+                                    actions.setSubmitting(false);
+                                })
+                                .catch(err => {
+                                    actions.setStatus({ serverError: err.message });
+                                    actions.setSubmitting(false);
+                                });
                         }}
                         render={(props) => (
                             <form onSubmit={props.handleSubmit}>
@@ -83,8 +83,8 @@ export default () => (
                                 />
 
                                 <div className="field">
-                                    <button type="submit" 
-                                    className={"button is-primary " + (props.isSubmitting?'is-loading':'')}>
+                                    <button type="submit"
+                                        className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}>
                                         Register
                                     </button>
                                 </div>

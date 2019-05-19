@@ -97,7 +97,7 @@ class UserService {
         
         await this._knex(USER_TABLE).insert(newUser);
         
-        await auditService.log(newUser, 'Created User', createdBy || id);
+        await auditService.log(newUser, 'USERSERVICE_CREATE_USER', createdBy || id);
 
         return newUser;
     }

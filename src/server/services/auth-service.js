@@ -4,14 +4,18 @@ const jwt = require('jsonwebtoken');
 const { RandomToken } = require('@sibevin/random-token')
 
 const { formatPhoneNumber } = require('../libs/phone-number');
-const userService = require('./user-service');
 const { sendSms } = require('../libs/sms');
+
+const userService = require('./user-service');
+const auditService = require('./audit-service');
+
 const { UnauthorizedError, ValidationError, AuthorizationError } = require('../errors');
 
-const refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION || '3h';
+const refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION || '1h';
+const refreshTokenExpirationSeconds = process.env.REFRESH_TOKEN_EXPIRATION_SECONDS || '3600'; //default 1 hr
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || 'S3CURE';
 
-const accessTokenExpiration = process.env.ACCESS_TOKEN_EXPIRATION || '10m';
+const accessTokenExpiration = process.env.ACCESS_TOKEN_EXPIRATION || '1m'; // 1 min access token exp
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'SECRET';
 
 
@@ -29,7 +33,7 @@ class AuthService {
         });
 
         this._refreshTokenCache = new NodeCache({
-            stdTTL: process.env.REFRESH_TOKEN_EXPIRATION || 60 * 60, //1 hour default
+            stdTTL: refreshTokenExpirationSeconds,
             checkperiod: 120
         });
     }
@@ -59,6 +63,7 @@ class AuthService {
 
         const message = `Your validation code is:\n ${token}`;
         const formattedNumber = formatPhoneNumber(phoneNumber);
+        auditService.log(user, "AUTHSERVICE_GENERATED_SHORTCODE");
         sendSms(formattedNumber, message);
     }
 
@@ -75,7 +80,8 @@ class AuthService {
 
         const user = await userService.getUserByPhoneNumber(phoneNumber);
 
-        const tokens = this._generateTokens(user);
+        const tokens = this.generateTokens(user);
+        auditService.log(user, "AUTHSERVICE_AUTHENTICATED");
         return tokens;
     }
 
@@ -86,8 +92,9 @@ class AuthService {
      * @param {String} accessToken 
      */
     async logoff(accessToken) {
-        const claims = this.validateAccessToken(accessToken);
+        const claims = this.validateAccessToken(accessToken);        
         await this._refreshTokenCache.del(claims.userId);
+        auditService.log(claims.userId, "AUTHSERVICE_LOGGEDOFF");
     }
 
     /**
@@ -119,14 +126,15 @@ class AuthService {
         }
 
         const user = await userService.getUserById(claims.userId);
-        return this._generateTokens(user);
+        auditService.log(user, "AUTHSERVICE_REFRESHED_TOKENS");
+        return this.generateTokens(user);
     }
 
     /**
      * generates access token/refresh token pairs.
      * @param {Object} user 
      */
-    async _generateTokens(user) {
+    async generateTokens(user) {
         const accessToken = jwt.sign(
             {
                 userId: user.id,

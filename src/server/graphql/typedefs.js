@@ -5,13 +5,24 @@ const typeDefs = `
     phoneNumber: String
   }
 
+  type TokenPair {
+    accessToken: String!,
+    refreshToken: String!,
+  }
+
+  type RegistrationInfo {
+    user: User,
+    tokens: TokenPair
+  }
+
   type Query {
     hello(name: String): String!,
     username: String!
   }
 
   type Mutation {
-    registerUser(name:String!, pin:String!, phoneNumber:String!): User
+    authRegisterUser(name:String!, pin:String!, phoneNumber:String!): RegistrationInfo,
+    authRefreshTokens(refreshToken:String!): TokenPair
   }
   `
 
