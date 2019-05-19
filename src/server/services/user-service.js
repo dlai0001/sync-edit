@@ -1,13 +1,12 @@
 const uuid = require('uuid/v4');
 const bcrypt = require('bcrypt');
 
-const PNF = require('google-libphonenumber').PhoneNumberFormat;
-const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
-
-const { ValidationError } = require('../errors');
+const { ValidationError, NotFoundError } = require('../errors');
 
 const knex = require('../db');
 const auditService = require('./audit-service');
+
+const {validatePhoneNumber, formatPhoneNumber} = require('../libs/phone-number');
 
 const hashRounds = process.env.HASH_ROUNDS || 10;
 
@@ -16,8 +15,24 @@ const USER_TABLE = 'users';
 class UserService {
 
     constructor() {
-        this.knex = knex;
+        this._knex = knex;
         this.auditService = auditService;
+    }
+
+    async getUserByPhoneNumber(phoneNumber) {
+        const formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+        const user = await this._knex.select('*')
+            .from(USER_TABLE)
+            .where({'phoneNumber':formattedPhoneNumber})
+            .orderBy('timestamp', 'DESC')
+            .limit(1);
+        debugger;
+     
+        if (user.length == 0 || user[0].deleted) {
+            throw new NotFoundError(`Unable to find user by number: ${formattedPhoneNumber}`);
+        }
+
+        return user[0];
     }
 
     /**
@@ -28,8 +43,7 @@ class UserService {
      */
     async createUser(name, phoneNumber, pin, createdBy=null) {
         // Validate phone number
-        const parsedNumber = phoneUtil.parseAndKeepRawInput(phoneNumber, 'US');
-        if (!phoneUtil.isPossibleNumber(parsedNumber)) {
+        if (!validatePhoneNumber(phoneNumber)) {
             throw new ValidationError({
                 data: {
                     phoneNumber: `Phone number must be valid format.`,
@@ -37,10 +51,10 @@ class UserService {
             });
         }
         // normalize phone number to international E164 format.
-        const toNumber = phoneUtil.format(parsedNumber, PNF.E164);
+        const toNumber = formatPhoneNumber(phoneNumber);
 
         // Phone number should be unique
-        const existingUser = await this.knex.select('*').from(USER_TABLE).where({ phoneNumber: toNumber }).limit(1);
+        const existingUser = await this._knex.select('*').from(USER_TABLE).where({ phoneNumber: toNumber }).limit(1);
         if (existingUser.length) {
             throw new ValidationError({
                 data: {
@@ -68,7 +82,7 @@ class UserService {
             pin: pinHash,            
         };
         
-        await this.knex(USER_TABLE).insert(newUser);
+        await this._knex(USER_TABLE).insert(newUser);
         
         await auditService.log(newUser, 'Created User', createdBy || id);
 

@@ -11,6 +11,6 @@ describe('auth-service', () => {
     });
 
     it('should generate token if phone and pin is valid.', () => {
-        
+        authService.sendShortCode('805-555-5555', '0000');
     });
 });
