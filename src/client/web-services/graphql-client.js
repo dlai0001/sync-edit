@@ -20,7 +20,7 @@ export function setClientAccessToken(accessToken) {
         request: async operation => {
             operation.setContext({
                 headers: {
-                    Authorization: token ? `Bearer ${accessToken}` : ''
+                    Authorization: accessToken ? `Bearer ${accessToken}` : ''
                 }
             });
         }

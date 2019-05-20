@@ -6,25 +6,34 @@ import { getGraphqlClient, setClientAccessToken } from '../web-services/graphql-
 
 const REFRESH_TOKEN_LOCALSTORAGE_KEY = 'REFRESH_TOKEN';
 
+const INITIAL_STATE = {
+    isAuthenticated: false,
+
+    userId: null,
+    userName: null,
+                
+    refreshToken: null,
+    accessToken: null,
+};
+
 export default class AuthContainer extends Container {
 
-    state = {
-        isAuthenticated: false,
-
-        userId: null,
-        userName: null,
-                    
-        refreshToken: null,
-        accessToken: null,
-    };
+    state = INITIAL_STATE;
 
     constructor() {
         super();
 
+        // Check if the previous refresh token stored in local storage is still
+        // valid, if so try to use it to refresh our session.
         const prevRefreshToken = localStorage.getItem(REFRESH_TOKEN_LOCALSTORAGE_KEY);
         if (prevRefreshToken) {
-            this.state.refreshToken = prevRefreshToken;
-            this.refreshToken();
+            const claims = decode(prevRefreshToken);
+            const secondsTillExp = claims.exp - (Date.now() / 1000);
+            if(secondsTillExp > 0) {
+                this.state.refreshToken = prevRefreshToken;
+                this.state.isAuthenticated = true;
+                this.refreshToken();
+            }            
         }
     }
 
@@ -87,7 +96,7 @@ export default class AuthContainer extends Container {
         console.debug('refreshing tokens');
 
         const REFRESH_TOKENS = gql`
-            mutation RegisterUser($refreshToken:String!) {
+            mutation RefreshTokens($refreshToken:String!) {
                 authRefreshTokens(refreshToken: $refreshToken) {
                     accessToken,
                     refreshToken
@@ -123,6 +132,26 @@ export default class AuthContainer extends Container {
             }
             
         });
+    }
+
+    logout() {
+        const LOGOUT = gql`
+            mutation {
+                authLogout
+            }
+        `;
+
+        getGraphqlClient().mutate({
+            mutation: LOGOUT,
+            variables: {}
+        }).catch((err) => {
+            console.error('Error during logout', err);
+        });
+
+        // Just clear out the tokens on the client side and logout, regardless of the request succeeding.
+        this.setState(INITIAL_STATE);
+        // remove refresh token set in local storage.
+        localStorage.removeItem(REFRESH_TOKEN_LOCALSTORAGE_KEY);        
     }
 
     /**

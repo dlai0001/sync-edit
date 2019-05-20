@@ -5,10 +5,10 @@ import { Redirect } from 'react-router-dom';
 
 const LOGIN_ROUTE = '/login'
 
-export default () => (
+export default props => (
     <Subscribe to={[AuthContainer]}>
         {auth => (
-            auth.state.isAuthenticated ? this.props.children : <Redirect to={LOGIN_ROUTE}/>
+            auth.state.isAuthenticated ? props.children : <Redirect to={LOGIN_ROUTE}/>
         )}
     </Subscribe>
 );

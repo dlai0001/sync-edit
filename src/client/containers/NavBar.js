@@ -1,12 +1,13 @@
 import React from 'react';
 import {Subscribe} from 'unstated';
+import {withRouter} from 'react-router-dom';
 
 import logo from '../assets/logo.png';
 import './NavBar.css';
 
 import AuthContainer from '../state-containers/AuthContainer';
 
-export default class NavBar extends React.Component {
+class NavBar extends React.Component {
     state = { open: false };
 
     componentDidMount() {
@@ -16,7 +17,16 @@ export default class NavBar extends React.Component {
     toggle = () => {
         this.setState({
             open: !this.state.open,
+            loggingOut: false,
         });
+    }
+
+    /**
+     * Logout.  we need to pass back the injected method so it's accessible to this handler.
+     * @param {AuthContainer} AuthContainer.
+     */
+    logout = (auth) => {
+        auth.logout();
     }
 
     render() {
@@ -66,7 +76,7 @@ export default class NavBar extends React.Component {
                                 {auth.state.isAuthenticated && (
                                     <div className="navbar-item">
                                         <div className="buttons">                                            
-                                            <a className="button is-light">                                                
+                                            <a className="button is-light" onClick={() => this.logout(auth)}>
                                                 Logout&nbsp;<i className="fas fa-sign-out-alt"></i>
                                             </a>
                                         </div>
@@ -80,3 +90,5 @@ export default class NavBar extends React.Component {
         );
     }
 };
+
+export default withRouter(NavBar);
