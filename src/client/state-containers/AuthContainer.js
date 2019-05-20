@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 
     userId: null,
     userName: null,
-                
+
     refreshToken: null,
     accessToken: null,
 };
@@ -29,11 +29,11 @@ export default class AuthContainer extends Container {
         if (prevRefreshToken) {
             const claims = decode(prevRefreshToken);
             const secondsTillExp = claims.exp - (Date.now() / 1000);
-            if(secondsTillExp > 0) {
+            if (secondsTillExp > 0) {
                 this.state.refreshToken = prevRefreshToken;
                 this.state.isAuthenticated = true;
                 this.refreshToken();
-            }            
+            }
         }
     }
 
@@ -70,16 +70,16 @@ export default class AuthContainer extends Container {
             mutation: REGISTER_USER,
             variables: registrationParams,
         }).then(resp => {
-            if (get(resp, 'data.authRegisterUser.user')) {                
+            if (get(resp, 'data.authRegisterUser.user')) {
                 this._processNewTokens(get(resp, 'data.authRegisterUser.tokens'));
 
                 const newState = {
-                    ...this.state,                    
+                    ...this.state,
                     userId: get(resp, 'data.authRegisterUser.user.id'),
-                    userName: get(resp, 'data.authRegisterUser.user.name'),                    
+                    userName: get(resp, 'data.authRegisterUser.user.name'),
                 };
 
-                console.debug(`Registration successful. New state:`, newState);                
+                console.debug(`Registration successful. New state:`, newState);
             }
         }).catch(err => {
             console.error('Error registering user', err);
@@ -108,17 +108,17 @@ export default class AuthContainer extends Container {
             mutation: REFRESH_TOKENS,
             variables: { refreshToken: this.state.refreshToken },
         }).then((resp) => {
-            console.debug('Got new tokens', resp.data);            
+            console.debug('Got new tokens', resp.data);
 
-            this._processNewTokens(get(resp, 'data.authRefreshTokens'));            
-        }).catch((err) => {            
+            this._processNewTokens(get(resp, 'data.authRefreshTokens'));
+        }).catch((err) => {
             console.debug('Error refreshing tokens', err);
 
             // If we weren't logged in to begin with, don't schedule refresh.
-            if(!this.state || !this.state.accessToken) {
+            if (!this.state || !this.state.accessToken) {
                 return;
             }
-            
+
             const accessToken = this.state.accessToken;
             const claims = decode(accessToken);
             const secondsTillExp = claims.exp - (Date.now() / 1000);
@@ -130,7 +130,7 @@ export default class AuthContainer extends Container {
             } else {
                 console.log('accessToken has already expired, session is no longer authenticated.')
             }
-            
+
         });
     }
 
@@ -143,7 +143,6 @@ export default class AuthContainer extends Container {
 
         getGraphqlClient().mutate({
             mutation: LOGOUT,
-            variables: {}
         }).catch((err) => {
             console.error('Error during logout', err);
         });
@@ -151,7 +150,69 @@ export default class AuthContainer extends Container {
         // Just clear out the tokens on the client side and logout, regardless of the request succeeding.
         this.setState(INITIAL_STATE);
         // remove refresh token set in local storage.
-        localStorage.removeItem(REFRESH_TOKEN_LOCALSTORAGE_KEY);        
+        localStorage.removeItem(REFRESH_TOKEN_LOCALSTORAGE_KEY);
+    }
+
+    /**
+     * Request short code.
+     * @param {String} phoneNumber 
+     * @param {String} pin 
+     */
+    sendShortCode(phoneNumber, pin) {
+        const REQUEST_CODE = gql`
+            mutation RequestCode($phoneNumber:String!, $pin:String!) {
+                authRequestShortCode(phoneNumber: $phoneNumber, pin: $pin)
+            }
+        `;
+
+        return getGraphqlClient().mutate({
+            mutation: REQUEST_CODE,
+            variables: { phoneNumber, pin },
+        }).catch((err) => {
+            console.error('Error during sending shortcode', err);
+            throw err;
+        });
+    }
+
+    /**
+     * Authenticate user.
+     * @param {String} phoneNumber 
+     * @param {String} shortCode 
+     */
+    authenticate(phoneNumber, shortCode) {
+        const AUTHENTICATE = gql`
+            mutation Authenticate($phoneNumber:String!, $shortCode:String!) {
+                authAuthenticate(phoneNumber: $phoneNumber, shortCode: $shortCode) {
+                    user {
+                        id,
+                        name,
+                        phoneNumber
+                    },
+                    tokens {
+                        accessToken,
+                        refreshToken,
+                    }
+                }
+            }
+        `;
+
+        return getGraphqlClient().mutate({
+            mutation: AUTHENTICATE,
+            variables: { phoneNumber, shortCode },
+        }).then((resp) => {
+            this._processNewTokens(get(resp, 'data.authAuthenticate.tokens'));
+
+            const newState = {
+                ...this.state,
+                userId: get(resp, 'data.authAuthenticate.user.id'),
+                userName: get(resp, 'data.authAuthenticate.user.name'),
+            };
+
+            console.debug(`Authentication successful. New state:`, newState);
+        }).catch((err) => {
+            console.error('Error during sending shortcode', err);
+            throw err;
+        });
     }
 
     /**
@@ -178,7 +239,7 @@ export default class AuthContainer extends Container {
 
         const newState = {
             ...this.state,
-            isAuthenticated: true,                        
+            isAuthenticated: true,
             refreshToken: refreshToken,
             accessToken: accessToken,
         };

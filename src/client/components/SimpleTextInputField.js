@@ -14,7 +14,7 @@ export default ({ props, name, icon, label, placeholder }) => (
     <div className="field">
         <label className="label">{label}</label>
         <div className="control has-icons-left">
-            <Field type="tel" className="input" placeholder={placeholder} name={name} />
+            <Field type="text" className="input" placeholder={placeholder} name={name} />
             <span className="icon is-small is-left">
                 <i className={icon}></i>
             </span>

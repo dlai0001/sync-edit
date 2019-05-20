@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const EnvironmentPlugin = require('webpack').EnvironmentPlugin;
 
 const outputDirectory = 'dist';
 
@@ -46,6 +47,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html',
             favicon: './public/favicon.ico'
-        })
+        }),
+        new EnvironmentPlugin({            
+            DEBUG: false
+        }),
     ]
 };

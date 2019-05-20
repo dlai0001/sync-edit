@@ -76,7 +76,8 @@ class AuthService {
      */
     async authenticate(phoneNumber, shortCode) {
         const expectedCode = await this._smsCodeCache.get(phoneNumber);
-        if (expectedCode !== shortCode || (process.env.DEBUG && shortCode === '0000000')) {
+        const debugBypass = (process.env.DEBUG && shortCode === '0000000');
+        if (expectedCode !== shortCode && !debugBypass) {
             throw new ValidationError('Code is not correct.')
         }
 
