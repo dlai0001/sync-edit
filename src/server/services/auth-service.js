@@ -142,6 +142,7 @@ class AuthService {
         const accessToken = jwt.sign(
             {
                 userId: user.id,
+                userName: user.name,
             },
             accessTokenSecret,
             {
@@ -152,6 +153,7 @@ class AuthService {
         const refreshToken = jwt.sign(
             {
                 userId: user.id,
+                userName: user.name,
             },
             refreshTokenSecret,
             {

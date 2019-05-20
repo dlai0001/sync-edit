@@ -6,8 +6,14 @@ import AuthenticatedRoute from '../components/AuthenticatedRoute';
  */
 export default () => (
     <AuthenticatedRoute>
-        <div>
-            Placeholder for Dashboard an authenticated route.
+        <div className="container">
+            <div className="column">
+                <h1>Coming Soon...</h1>
+                <div>
+                    More fun things will be arriving into this authenticated route.
+                </div>
+            </div>
+
         </div>
     </AuthenticatedRoute>
 );

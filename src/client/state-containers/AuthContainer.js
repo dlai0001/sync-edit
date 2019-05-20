@@ -242,6 +242,9 @@ export default class AuthContainer extends Container {
             isAuthenticated: true,
             refreshToken: refreshToken,
             accessToken: accessToken,
+
+            userId: this.state.userId || claims.userId,
+            userName: this.state.userName || claims.userName,
         };
 
         console.log(`Token update successful. New state:`, newState);

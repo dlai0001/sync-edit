@@ -65,7 +65,7 @@ class NavBar extends React.Component {
                                 )}
 
                                 {auth.state.isAuthenticated && (
-                                    <div className="navbar-item">
+                                    <div className={'navbar-item' + (auth.state.isAuthenticated?' is-active':'')}>
                                         <div className="buttons">
                                             <i className="fas fa-user"></i>&nbsp;
                                             {auth.state.userName} 
