@@ -143,12 +143,13 @@ describe('auth-service', () => {
         });
 
         it('should throw UnauthorizedError if refreshing logged off token', async () => {
+            // authenticate with user setup in the seed file.
             await authService.sendShortCode('805-555-5555', '0000');
             const lastSms = getLastSms();
-            const shortCode = /\d+/.exec(lastSms.text)[0];
-    
+            const shortCode = /\d+/.exec(lastSms.text)[0];    
             const tokens = await authService.authenticate('805-555-5555', shortCode);
-            authService.logoff(tokens.accessToken);
+            // logoff this user
+            authService.logoff('25795751-b418-480c-a09b-9712069e8b31');
             
             try {
                 await authService.refreshTokens(tokens.refreshToken);

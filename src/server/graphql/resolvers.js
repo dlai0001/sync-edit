@@ -23,7 +23,8 @@ const resolvers = {
         authRequestShortCode: async (_, { phoneNumber, pin }) => {
             return await authService.sendShortCode(phoneNumber, pin);
         },
-        authAuthenticate: async (_, { phoneNumber, shortCode }) => {
+        authAuthenticate: async (_, { phoneNumber, shortCode }) => {            
+            console.log('authenticatedUser is ', authenticatedUser);
             const tokens = await authService.authenticate(phoneNumber, shortCode);
             const user = await userService.getUserByPhoneNumber(phoneNumber);
 
@@ -31,7 +32,14 @@ const resolvers = {
                 user,
                 tokens,
             }
-        }
+        },
+        authLogout: async (_, _args, {authenticatedUser}) => {
+            console.debug('Logging off ', authenticatedUser);
+            if (authenticatedUser) {
+                await authService.logoff(authenticatedUser.userId);
+            }
+            return true;
+        },
     }
 };
 

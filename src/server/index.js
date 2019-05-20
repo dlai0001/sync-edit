@@ -5,8 +5,8 @@ const { GraphQLServer } = require('graphql-yoga');
 const { formatError } = require('apollo-errors');
 
 const typeDefs = require('./graphql/typedefs');
-
 const resolvers = require('./graphql/resolvers');
+const middleware = require('./graphql/middleware');
 
 const GRAPHQL_PATHS = [
     '/playground',
@@ -16,7 +16,8 @@ const GRAPHQL_PATHS = [
 
 const graphqlserver = new GraphQLServer({ 
     typeDefs,
-    resolvers, 
+    resolvers,
+    context: middleware,
 });
 
 graphqlserver.express.use(express.static('dist'));

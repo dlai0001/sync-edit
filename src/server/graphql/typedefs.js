@@ -24,7 +24,8 @@ const typeDefs = `
         authRegisterUser(name:String!, pin:String!, phoneNumber:String!): AuthProfile,
         authRefreshTokens(refreshToken:String!): TokenPair,
         authRequestShortCode(phoneNumber:String!, pin:String!): Boolean,
-        authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile
+        authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile,
+        authLogout : Boolean
     }
 `;
 

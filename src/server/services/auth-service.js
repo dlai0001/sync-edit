@@ -91,12 +91,11 @@ class AuthService {
      * Logs off the user by invalidating the refresh token.  The user will no
      * longer be able to access resources once short lived access token has
      * expired.
-     * @param {String} accessToken 
+     * @param {String} userId 
      */
-    async logoff(accessToken) {
-        const claims = this.validateAccessToken(accessToken);        
-        await this._refreshTokenCache.del(claims.userId);
-        auditService.log(claims.userId, "AUTHSERVICE_LOGGEDOFF");
+    async logoff(userId) {
+        await this._refreshTokenCache.del(userId);        
+        auditService.log(userId, "AUTHSERVICE_LOGGEDOFF");
     }
 
     /**
