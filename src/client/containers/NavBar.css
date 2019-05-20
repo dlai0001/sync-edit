@@ -9,3 +9,11 @@
 nav .navbar-brand a.navbar-burger span {
     background-color: white;
 }
+
+nav .navbar-item {
+    color: white;
+}
+
+nav .navbar-item.is-active {
+    color: black;
+}
