@@ -19,6 +19,18 @@ const resolvers = {
         authRefreshTokens: async (_, { refreshToken }) => {
             const tokens = await authService.refreshTokens(refreshToken);
             return tokens;
+        },
+        authRequestShortCode: async (_, { phoneNumber, pin }) => {
+            return await authService.sendShortCode(phoneNumber, pin);
+        },
+        authAuthenticate: async (_, { phoneNumber, shortCode }) => {
+            const tokens = await authService.authenticate(phoneNumber, shortCode);
+            const user = await userService.getUserByPhoneNumber(phoneNumber);
+
+            return {
+                user,
+                tokens,
+            }
         }
     }
 };

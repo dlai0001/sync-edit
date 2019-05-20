@@ -1,29 +1,31 @@
 const typeDefs = `
-  type User {
-    id: ID!,
-    name: String,
-    phoneNumber: String
-  }
+    type User {
+        id: ID!,
+        name: String,
+        phoneNumber: String
+    }
 
-  type TokenPair {
-    accessToken: String!,
-    refreshToken: String!,
-  }
+    type TokenPair {
+        accessToken: String!,
+        refreshToken: String!,
+    }
 
-  type RegistrationInfo {
-    user: User,
-    tokens: TokenPair
-  }
+    type AuthProfile {
+        user: User,
+        tokens: TokenPair
+    }
 
-  type Query {
-    hello(name: String): String!,
-    username: String!
-  }
+    type Query {
+        hello(name: String): String!,
+        username: String!
+    }
 
-  type Mutation {
-    authRegisterUser(name:String!, pin:String!, phoneNumber:String!): RegistrationInfo,
-    authRefreshTokens(refreshToken:String!): TokenPair
-  }
-  `
+    type Mutation {
+        authRegisterUser(name:String!, pin:String!, phoneNumber:String!): AuthProfile,
+        authRefreshTokens(refreshToken:String!): TokenPair,
+        authRequestShortCode(phoneNumber:String!, pin:String!): Boolean,
+        authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile
+    }
+`;
 
-  module.exports = typeDefs;
+module.exports = typeDefs;

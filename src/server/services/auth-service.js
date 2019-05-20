@@ -65,6 +65,8 @@ class AuthService {
         const formattedNumber = formatPhoneNumber(phoneNumber);
         auditService.log(user, "AUTHSERVICE_GENERATED_SHORTCODE");
         sendSms(formattedNumber, message);
+
+        return true;
     }
 
     /**
