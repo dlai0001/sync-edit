@@ -116,8 +116,10 @@ class AuthService {
      * @param {String} refreshToken
      */
     async refreshTokens(refreshToken) {
-        const claims = jwt.verify(refreshToken, refreshTokenSecret);
-        if (!claims) {
+        let claims;
+        try {
+            claims = jwt.verify(refreshToken, refreshTokenSecret);
+        } catch {
             throw new UnauthorizedError('User is not authorized.');
         }
 
