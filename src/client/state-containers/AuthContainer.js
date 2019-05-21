@@ -114,6 +114,13 @@ export default class AuthContainer extends Container {
         }).catch((err) => {
             console.debug('Error refreshing tokens', err);
 
+            // remove our bad tokens and skip retrying if we are getting Unauthorized Errors
+            if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='UnauthorizedError')) {
+                localStorage.removeItem(REFRESH_TOKEN_LOCALSTORAGE_KEY);
+                this.setState(INITIAL_STATE);
+                return;
+            }
+
             // If we weren't logged in to begin with, don't schedule refresh.
             if (!this.state || !this.state.accessToken) {
                 return;
