@@ -142,6 +142,7 @@ export default class AuthContainer extends Container {
     }
 
     logout() {
+        console.debug('logging out');
         const LOGOUT = gql`
             mutation {
                 authLogout
@@ -150,6 +151,8 @@ export default class AuthContainer extends Container {
 
         getGraphqlClient().mutate({
             mutation: LOGOUT,
+        }).then(()=> {
+            console.log('Logout request succeeded.');
         }).catch((err) => {
             console.error('Error during logout', err);
         });

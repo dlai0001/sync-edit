@@ -1,6 +1,9 @@
 .main-nav {
     background: #106b03;
 }
+div.navbar-menu.is-active {
+    background: #106b03;
+}
 
 .main-nav .navbar-brand img {
     transform: scale(1.5, 1.5);
@@ -14,6 +17,6 @@ nav .navbar-item {
     color: white;
 }
 
-nav .navbar-item.is-active {
+/* nav .navbar-item.is-active {
     color: black;
-}
+} */

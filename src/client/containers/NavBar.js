@@ -21,14 +21,6 @@ class NavBar extends React.Component {
         });
     }
 
-    /**
-     * Logout.  we need to pass back the injected method so it's accessible to this handler.
-     * @param {AuthContainer} AuthContainer.
-     */
-    logout = (auth) => {
-        auth.logout();
-    }
-
     render() {
         return (
             <Subscribe to={[AuthContainer]}>
@@ -76,7 +68,7 @@ class NavBar extends React.Component {
                                 {auth.state.isAuthenticated && (
                                     <div className="navbar-item">
                                         <div className="buttons">                                            
-                                            <a className="button is-light" onClick={() => this.logout(auth)}>
+                                            <a className="button is-light" onClick={auth.logout()}>
                                                 Logout&nbsp;<i className="fas fa-sign-out-alt"></i>
                                             </a>
                                         </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import {Field} from 'formik';
 
 /**
- * Simple form text input with Bulma styling and error display.
+ * Simple form text input to work with Formik with Bulma styling and error display.
  * @param {Object} params
  * @param {String} params.props Form props from <Formik> form.
  * @param {String} params.name name of this property
