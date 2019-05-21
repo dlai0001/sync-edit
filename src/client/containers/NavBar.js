@@ -66,9 +66,9 @@ class NavBar extends React.Component {
                                 )}
 
                                 {auth.state.isAuthenticated && (
-                                    <div className="navbar-item">
+                                    <div className="navbar-item">                                    
                                         <div className="buttons">                                            
-                                            <a className="button is-light" onClick={auth.logout()}>
+                                            <a className="button is-light" onClick={auth.logout.bind(auth)}>
                                                 Logout&nbsp;<i className="fas fa-sign-out-alt"></i>
                                             </a>
                                         </div>
