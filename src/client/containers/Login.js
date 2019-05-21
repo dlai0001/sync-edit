@@ -36,182 +36,195 @@ class Login extends React.Component {
         this.state = { phoneNumber: null, pin: null };
     }
 
+    /**
+     * Resets this form
+     */
     reenterPhone = () => {
-        this.setState({phoneNumber: null, pin: null });
+        this.setState({ phoneNumber: null, pin: null });
+    }
+
+    /**
+     * Handles initial submission of phone number and pin to send a short code.
+     * @param {Object} values - Formik values object
+     * @param {Object} actions - Formik form actions object
+     */
+    sendShortCode = (values, actions) => {
+        const {auth} = this.props;
+        auth.sendShortCode(values.phoneNumber, values.pin)
+            .then(() => {
+                actions.setSubmitting(false);
+                this.setState({ ...this.state, pin: values.pin, phoneNumber: values.phoneNumber });
+            })
+            .catch(err => {
+                actions.setStatus({ serverError: err.message });
+                actions.setSubmitting(false);
+            });
+    }
+
+    handleConfirmShortCodeForm = (values, actions) => {
+        const {auth} = this.props;
+        if (values.action == 'confirm') {
+            console.debug('submitting shortcode');
+            auth.authenticate(values.phoneNumber, values.shortCode)
+                .then(() => {
+                    actions.setSubmitting(false);
+                })
+                .catch(err => {
+                    actions.setStatus({ serverError: err.message });
+                    actions.setSubmitting(false);
+                });
+        } else if (values.action == 'resend') {
+            console.debug('resending shortcode');
+            auth.sendShortCode(values.phoneNumber, values.pin)
+                .then(() => {
+                    actions.setSubmitting(false);
+                    this.setState({ ...this.state, pin: values.pin, phoneNumber: values.phoneNumber });
+                    actions.setStatus({ serverSuccess: 'Code has been resent' })
+                })
+                .catch(err => {
+                    actions.setStatus({ serverError: err.message });
+                    actions.setSubmitting(false);
+                });
+        }
     }
 
     render() {
-        const {pin, phoneNumber} = this.state;
+        const { auth } = this.props;
+        const { pin, phoneNumber } = this.state;
         const shortCodeSent = pin && phoneNumber;
 
         return (
-            <Subscribe to={[AuthContainer]}>
-                {auth => (
-                    <React.Fragment>
-                        {auth.state.isAuthenticated && (
-                            //Redirect to dashboard when registration successful and we get authenticated.
-                            <Redirect to="/dashboard"></Redirect>
-                        )}
-                        {!shortCodeSent && (
-                            <div className="container">
-                                <div className="column">
-                                    <h1 className="title">Recipe Sync - Login</h1>
-                                    <Formik
-                                        initialValues={{ pin: '', phoneNumber: '' }}
-                                        validationSchema={LoginSchema}
-                                        onSubmit={(values, actions) => {
-                                            auth.sendShortCode(values.phoneNumber, values.pin)
-                                            .then(() => {
-                                                actions.setSubmitting(false);
-                                                this.setState({ ...this.state, pin: values.pin, phoneNumber: values.phoneNumber });
-                                            })
-                                            .catch(err => {
-                                                actions.setStatus({ serverError: err.message });
-                                                actions.setSubmitting(false);
-                                            });
-                                        }}
-                                        render={(props) => (
-                                            <form onSubmit={props.handleSubmit}>
-                                                {props.status && props.status.serverError && (
-                                                    <div className="box has-background-danger has-text-white">
-                                                        {props.status.serverError}
-                                                    </div>
-                                                )}
-
-                                                <SimpleTextInputField
-                                                    props={props}
-                                                    name="phoneNumber"
-                                                    icon="fas fa-mobile-alt"
-                                                    label="Phone Number"
-                                                    placeholder="+1-555-555-5555"
-                                                />
-
-                                                <SimpleTextInputField
-                                                    props={props}
-                                                    name="pin"
-                                                    icon="fas fa-unlock"
-                                                    label="PIN code"
-                                                    placeholder="1234"
-                                                />
-
-                                                <div className="field">
-                                                    <button type="submit"
-                                                        className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}>
-                                                        Login
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {shortCodeSent && (
-                            <div className="container">
-                                <div className="column">
-                                    <h1 className="title">Recipe Sync - Login</h1>
-                                    <Formik
-                                        initialValues={{ shortCode:'', phoneNumber: this.state.phoneNumber, pin: this.state.pin, action: null }}
-                                        validationSchema={ShortCodeSchema}
-                                        onSubmit={(values, actions) => {
-                                            
-                                            
-                                            if (values.action == 'confirm') {
-                                                console.debug('submitting shortcode');
-                                                auth.authenticate(values.phoneNumber, values.shortCode)
-                                                    .then(() => {
-                                                        actions.setSubmitting(false);
-                                                    })
-                                                    .catch(err => {
-                                                        actions.setStatus({ serverError: err.message });
-                                                        actions.setSubmitting(false);
-                                                    });
-                                            } else if(values.action == 'resend') {
-                                                console.debug('resending shortcode');
-                                                auth.sendShortCode(values.phoneNumber, values.pin)
-                                                    .then(() => {
-                                                        actions.setSubmitting(false);
-                                                        this.setState({ ...this.state, pin: values.pin, phoneNumber: values.phoneNumber });
-                                                        actions.setStatus({serverSuccess: 'Code has been resent'})
-                                                    })
-                                                    .catch(err => {
-                                                        actions.setStatus({ serverError: err.message });
-                                                        actions.setSubmitting(false);
-                                                    });
-                                            }
-                                            
-                                        }}
-                                        render={(props) => (
-                                            <form onSubmit={props.handleSubmit}>
-                                                {props.status && props.status.serverError && (
-                                                    <div className="box has-background-danger has-text-white">
-                                                        {props.status.serverError}
-                                                    </div>
-                                                )}
-
-                                                {props.status && props.status.serverSuccess && (
-                                                    <div className="box has-background-success has-text-white">
-                                                        {props.status.serverSuccess}
-                                                    </div>
-                                                )}
-
-                                                <SimpleTextInputField
-                                                    props={props}
-                                                    name="shortCode"
-                                                    icon="fas fa-mobile-alt"
-                                                    label="Please enter the code you were texted."
-                                                    placeholder="1234567"
-                                                />                                                
-
-                                                <div className="field is-grouped">
-                                                    <p className="control">
-                                                        <button type="submit"
-                                                            className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}
-                                                            onClick={() => {
-                                                                props.setFieldValue('action','confirm');
-                                                                props.submitForm();
-                                                            }}
-                                                        >
-                                                            Confirm
-                                                        </button>
-                                                    </p>
-                                                    <p className="control">
-                                                        <button type="submit"                                                        
-                                                            className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}
-                                                            onClick={() => {
-                                                                props.setFieldValue('action','resend');
-                                                                props.submitForm();
-                                                            }}
-                                                        >
-                                                            Resend Code
-                                                        </button>
-                                                    </p>
-                                                    
-                                                </div>
-                                                <div className="field">
-                                                    <a onClick={this.reenterPhone}
-                                                        className="is-link is-secondary">
-                                                        Re-Enter Phone Number
-                                                    </a>
-                                                </div>
-                                                {process.env.DEBUG && (
-                                                    <div className="field">
-                                                    DEBUG IS ON: You can enter '0000000' as the confirmation code.
-                                                    </div>
-                                                )}                                                
-                                            </form>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                    </React.Fragment>
+            <React.Fragment>
+                {auth.state.isAuthenticated && (
+                    //Redirect to dashboard when registration successful and we get authenticated.
+                    <Redirect to="/dashboard"></Redirect>
                 )}
-            </Subscribe>
+                {!shortCodeSent && (
+                    <div className="container">
+                        <div className="column">
+                            <h1 className="title">Recipe Sync - Login</h1>
+                            <Formik
+                                initialValues={{ pin: '', phoneNumber: '' }}
+                                validationSchema={LoginSchema}
+                                onSubmit={this.sendShortCode}
+                                render={(props) => (
+                                    <form onSubmit={props.handleSubmit}>
+                                        {props.status && props.status.serverError && (
+                                            <div className="box has-background-danger has-text-white">
+                                                {props.status.serverError}
+                                            </div>
+                                        )}
+
+                                        <SimpleTextInputField
+                                            props={props}
+                                            name="phoneNumber"
+                                            icon="fas fa-mobile-alt"
+                                            label="Phone Number"
+                                            placeholder="+1-555-555-5555"
+                                        />
+
+                                        <SimpleTextInputField
+                                            props={props}
+                                            name="pin"
+                                            icon="fas fa-unlock"
+                                            label="PIN code"
+                                            placeholder="1234"
+                                        />
+
+                                        <div className="field">
+                                            <button type="submit"
+                                                className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}>
+                                                Login
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {shortCodeSent && (
+                    <div className="container">
+                        <div className="column">
+                            <h1 className="title">Recipe Sync - Login</h1>
+                            <Formik
+                                initialValues={{ shortCode: '', phoneNumber: this.state.phoneNumber, pin: this.state.pin, action: null }}
+                                validationSchema={ShortCodeSchema}
+                                onSubmit={this.handleConfirmShortCodeForm}
+                                render={(props) => (
+                                    <form onSubmit={props.handleSubmit}>
+                                        {props.status && props.status.serverError && (
+                                            <div className="box has-background-danger has-text-white">
+                                                {props.status.serverError}
+                                            </div>
+                                        )}
+
+                                        {props.status && props.status.serverSuccess && (
+                                            <div className="box has-background-success has-text-white">
+                                                {props.status.serverSuccess}
+                                            </div>
+                                        )}
+
+                                        <SimpleTextInputField
+                                            props={props}
+                                            name="shortCode"
+                                            icon="fas fa-mobile-alt"
+                                            label="Please enter the code you were texted."
+                                            placeholder="1234567"
+                                        />
+
+                                        <div className="field is-grouped">
+                                            <p className="control">
+                                                <button type="submit"
+                                                    className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}
+                                                    onClick={() => {
+                                                        props.setFieldValue('action', 'confirm');
+                                                        props.submitForm();
+                                                    }}
+                                                >
+                                                    Confirm
+                                                </button>
+                                            </p>
+                                            <p className="control">
+                                                <button type="submit"
+                                                    className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}
+                                                    onClick={() => {
+                                                        props.setFieldValue('action', 'resend');
+                                                        props.submitForm();
+                                                    }}
+                                                >
+                                                    Resend Code
+                                                </button>
+                                            </p>
+
+                                        </div>
+                                        <div className="field">
+                                            <a onClick={this.reenterPhone}
+                                                className="is-link is-secondary">
+                                                Re-Enter Phone Number
+                                            </a>
+                                        </div>
+                                        {process.env.DEBUG && (
+                                            <div className="field">
+                                                DEBUG IS ON: You can enter '0000000' as the confirmation code.
+                                            </div>
+                                        )}
+                                    </form>
+                                )}
+                            />
+                        </div>
+                    </div>
+                )}
+
+            </React.Fragment>
+
         );
     }
 }
-export default Login;
+
+
+const AuthContainerWrappedLogin = () => <Subscribe to={[AuthContainer]}>{auth => (<Login auth={auth}/>)}</Subscribe>;
+
+export default AuthContainerWrappedLogin;
 
