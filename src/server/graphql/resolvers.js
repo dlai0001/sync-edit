@@ -10,10 +10,9 @@ const resolvers = {
     Mutation: {
         authRegisterUser: async (_, { name, pin, phoneNumber }) => {
             const user = await userService.createUser(name, phoneNumber, pin);
-            const tokens = await authService.generateTokens(user);
             return {
                 user,
-                tokens,
+                tokens: async () => authService.generateTokens(user),
             };
         },
         authRefreshTokens: async (_, { refreshToken }) => {
@@ -23,12 +22,13 @@ const resolvers = {
         authRequestShortCode: async (_, { phoneNumber, pin }) => {
             return await authService.sendShortCode(phoneNumber, pin);
         },
-        authAuthenticate: async (_, { phoneNumber, shortCode }) => {                        
+        authAuthenticate: async (_, { phoneNumber, shortCode }) => {
+            // tokens must succeed before other resolvers can run to ensure
+            // phoneNumber/shortCode matches.
             const tokens = await authService.authenticate(phoneNumber, shortCode);
-            const user = await userService.getUserByPhoneNumber(phoneNumber);
 
             return {
-                user,
+                user: async () => userService.getUserByPhoneNumber(phoneNumber),
                 tokens,
             }
         },
