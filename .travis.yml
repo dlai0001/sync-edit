@@ -1,24 +1,26 @@
 language: node_js
 
 node_js:
-  - 12
+    - 12
 
 sudo: required
-before_install:
-  - npm install -g node-gyp
+
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+        - ubuntu-toolchain-r-test
     packages:
-    - g++-5
+        - g++-5
+env:
+    - CXX=g++-4.8
 
 script:
-  - sudo apt-get install -y libstdc++6
-  - sudo apt-get install -y sqlite3 libsqlite3-dev
-  - npm ci
-  - npm install sqlite3 --build-from-source &> /dev/null
-  - npm run test
+    - sudo apt-get install -y libstdc++6
+    - sudo apt-get install -y sqlite3 libsqlite3-dev
+    - npm install -g node-gyp --build-from-source &> /dev/null
+    - npm install sqlite3 --build-from-source &> /dev/null
+    - CXX=g++-5 npm ci
+    - npm run test
 
 branches:
   only:

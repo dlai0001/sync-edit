@@ -20,12 +20,19 @@ const typeDefs = `
         username: String!
     }
 
+    type RecipeInput {
+        title: String!,
+        
+    }
+
     type Mutation {
         authRegisterUser(name:String!, pin:String!, phoneNumber:String!): AuthProfile,
         authRefreshTokens(refreshToken:String!): TokenPair,
         authRequestShortCode(phoneNumber:String!, pin:String!): Boolean,
         authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile,
-        authLogout : Boolean
+        authLogout : Boolean,
+
+        reciepeCreate(title:String!, about:String!)
     }
 `;
 
