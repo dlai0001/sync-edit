@@ -1,4 +1,5 @@
 language: node_js
+dist: xenial
 
 node_js:
     - 12
@@ -6,7 +7,8 @@ node_js:
 sudo: required
 
 script:
-    - sudo apt-get install libstdc++6-7-dbg
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    - sudo apt-get install libstdc++6-4.7-dev
     - sudo apt-get install -y sqlite3 libsqlite3-dev
     - npm install -g node-gyp --build-from-source &> /dev/null
     - npm install sqlite3 --build-from-source
