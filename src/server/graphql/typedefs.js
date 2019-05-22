@@ -15,12 +15,7 @@ const typeDefs = `
         tokens: TokenPair
     }
 
-    type Query {
-        hello(name: String): String!,
-        username: String!
-    }
-
-    type RecipeInput {
+    input RecipeInput {
         title: String!,
         about: String,
         recipeText: String
@@ -31,8 +26,13 @@ const typeDefs = `
         title: String!,
         about: String,
         recipeText: String,
-        owner: String!
+        owner: User!
     }
+
+    type Query {
+        hello(name: String): String!,
+        username: String!
+    } 
 
     type Mutation {
         authRegisterUser(name:String!, pin:String!, phoneNumber:String!): AuthProfile,
@@ -41,7 +41,7 @@ const typeDefs = `
         authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile,
         authLogout : Boolean,
 
-        reciepeCreate(title:String!, about:String!) : Recipe
+        recipeCreate(input: RecipeInput!) : Recipe!
     }
 `;
 
