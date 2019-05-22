@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const { ValidationError, NotFoundError } = require('../errors');
 
@@ -85,7 +85,8 @@ class UserService {
             });
         }
         // encrypt pin into one way hash.
-        const pinHash = await bcrypt.hash(pin, hashRounds);
+        const salt = bcrypt.genSaltSync(hashRounds);
+        var pinHash = bcrypt.hashSync(pin, salt);
 
         const id = uuid();
         const newUser = {

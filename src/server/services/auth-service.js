@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const NodeCache = require("node-cache");
 const jwt = require('jsonwebtoken');
 const { RandomToken } = require('@sibevin/random-token')
@@ -52,7 +52,7 @@ class AuthService {
         }
 
         // Validate pin hash
-        const pinMatch = await bcrypt.compare(pin, user.pin);
+        const pinMatch = bcrypt.compareSync(pin, user.pin);
         if (!pinMatch) {
             throw new UnauthorizedError('Phone number and PIN did not match.');
         }

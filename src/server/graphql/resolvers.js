@@ -38,6 +38,9 @@ const resolvers = {
             }
             return true;
         },
+        reciepeCreate: async (_, _args, {authenticatedUser}) => {
+            return null;
+        }
     }
 };
 

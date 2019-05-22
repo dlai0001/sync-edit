@@ -22,7 +22,16 @@ const typeDefs = `
 
     type RecipeInput {
         title: String!,
-        
+        about: String,
+        recipeText: String
+    }
+
+    type Recipe {
+        id: ID!,
+        title: String!,
+        about: String,
+        recipeText: String,
+        owner: String!
     }
 
     type Mutation {
@@ -32,7 +41,7 @@ const typeDefs = `
         authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile,
         authLogout : Boolean,
 
-        reciepeCreate(title:String!, about:String!)
+        reciepeCreate(title:String!, about:String!) : Recipe
     }
 `;
 
