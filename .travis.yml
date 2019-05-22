@@ -10,8 +10,9 @@ script:
     - sudo apt-get install -y sqlite3 libsqlite3-dev
     - npm install -g node-gyp --build-from-source &> /dev/null
     - npm install sqlite3 --build-from-source &> /dev/null
-    - npm install
-    - npm run test
+    - npm install yarn
+    - yarn install
+    - yarn run test
 
 branches:
   only:
