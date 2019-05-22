@@ -11,7 +11,7 @@ exports.up = function (knex) {
             table.string('pin').notNullable();
 
             // Used to track latest version.
-            table.timestamp('timestamp', 10).notNullable().default(knex.fn.now());
+            table.timestamp('timestamp', {precision: 6}).notNullable().default(knex.fn.now());
             // Tracks deleted.  If latest version has deleted timestamp, then considered deleted.
             table.timestamp('deleted');
         });
