@@ -26,6 +26,7 @@ const typeDefs = `
         title: String!,
         about: String,
         recipeText: String,
+        ownerId: String!,
         owner: User!
     }
 

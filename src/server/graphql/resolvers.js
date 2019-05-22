@@ -38,8 +38,16 @@ const resolvers = {
             }
             return true;
         },
-        recipeCreate: async (_, _args, {authenticatedUser}) => {
-            return null;
+        recipeCreate: async (_obj, _args, _context, _info, _foobarr) => {
+            
+            return {
+                id: 1,
+                title: 'Foobar',
+                about: 'About Foo',
+                recipeText: 'Bar recipe',
+                owner_id: 'Foo',
+                owner: () => userService.getUserById('Foo'),
+            };
         }
     }
 };

@@ -11,8 +11,8 @@ script:
     - npm install -g node-gyp --build-from-source &> /dev/null
     - npm install sqlite3 --build-from-source &> /dev/null
     - npm install yarn
-    - yarn install
-    - yarn run test
+    - ./node_modules/.bin/yarn install
+    - ./node_modules/.bin/yarn run test
 
 branches:
   only:
