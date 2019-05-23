@@ -1,9 +1,9 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex, _Promise) {
     return knex.schema
         .createTable('recipes', function (table) {
-            // Integer Id.  I expect to doing more joins on this table, integer joins take up less memory than string joins.
-            table.integer('id');  
+            // uuid
+            table.string('id');  
 
             // data fields
             table.string('title').notNullable();
@@ -20,6 +20,6 @@ exports.up = function (knex, Promise) {
         })        
 };
 
-exports.down = function (knex, Promise) {
+exports.down = function (knex, _Promise) {
     return knex.schema.dropTable('recipes');
 };

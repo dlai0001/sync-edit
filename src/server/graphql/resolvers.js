@@ -1,6 +1,7 @@
 const os = require('os');
 const userService = require('../services/user-service');
 const authService = require('../services/auth-service');
+const recipeService = require('../services/recipe-service');
 
 const resolvers = {
     Query: {
@@ -38,15 +39,13 @@ const resolvers = {
             }
             return true;
         },
-        recipeCreate: async (_obj, _args, _context, _info, _foobarr) => {
-            
+        recipeCreate: async (_obj, {input}, {authenticatedUser}) => {
+            const {title, about, recipeText} = input;
+            const newRecipe = await recipeService.createRecipe(title, about, recipeText, authenticatedUser.userId);
+
             return {
-                id: 1,
-                title: 'Foobar',
-                about: 'About Foo',
-                recipeText: 'Bar recipe',
-                owner_id: 'Foo',
-                owner: () => userService.getUserById('Foo'),
+                ...newRecipe,
+                owner: () => userService.getUserById(authenticatedUser.userId),
             };
         }
     }

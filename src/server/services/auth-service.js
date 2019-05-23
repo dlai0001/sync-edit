@@ -9,7 +9,7 @@ const { sendSms } = require('../libs/sms');
 const userService = require('./user-service');
 const auditService = require('./audit-service');
 
-const { UnauthorizedError, ValidationError, AuthorizationError } = require('../errors');
+const { UnauthorizedError, ValidationError } = require('../errors');
 
 const refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION || '1h';
 const refreshTokenExpirationSeconds = process.env.REFRESH_TOKEN_EXPIRATION_SECONDS || '3600'; //default 1 hr

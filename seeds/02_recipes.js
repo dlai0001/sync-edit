@@ -6,7 +6,7 @@ exports.seed = function(knex, Promise) {
       // Inserts seed entries
       return knex('recipes').insert([
         {
-          id: 1, 
+          id: 'beb7cf79-1c80-47eb-a3a2-c5261063d31c', 
           title: 'Avocado Toast', 
           about: 'A delicious, rich, savory, avocado toast with vinegrette dressing on sour dough.',
           recipeText: `1. Oil your pan with olive oil and heat on high.

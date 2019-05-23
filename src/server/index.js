@@ -1,3 +1,6 @@
+require('dotenv').config()
+require('dotenv').config(); // Load env vars.
+
 const path = require('path');
 const express = require('express');
 
