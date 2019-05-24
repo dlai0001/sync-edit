@@ -2,19 +2,19 @@
 const knex = require('../db');
 const uuid = require('uuid/v4');
 const yup = require('yup');
-const { ValidationError, UnauthorizedError } = require('../errors');
+const { ValidationError } = require('../errors');
+
+const auditService = require('./audit-service');
 
 const RECIPES_TABLE = 'recipes';
 
-const recipeValidationSchema = yup.object().shape({
+const recipeValidationSchema = yup.object().shape({    
     title: yup.string().min(2, 'Title too short.').required(),
+    ownerId: yup.string().required(),
 });
 
 class RecipeService {
-    async createRecipe(title, about, recipeText, userId) {
-        if(!userId) {
-            throw new UnauthorizedError('Must be logged in to create recipe.');
-        }
+    async createRecipe(title, about, recipeText, userId) {        
 
         const id = uuid();
         const newRecipe = {
@@ -29,7 +29,6 @@ class RecipeService {
             await recipeValidationSchema.validate(newRecipe);
         } catch(err) {
             if(err instanceof yup.ValidationError) {
-                debugger;
                 throw new ValidationError({
                     data: {
                         [err.path]: err.errors.join(' '),
@@ -38,8 +37,8 @@ class RecipeService {
             }
         }
 
-
         await knex.insert(newRecipe).into(RECIPES_TABLE);
+        auditService.log(userId, 'CREATED_RECIPE', id);
 
         return newRecipe;
     }

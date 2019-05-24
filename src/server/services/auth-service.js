@@ -9,7 +9,7 @@ const { sendSms } = require('../libs/sms');
 const userService = require('./user-service');
 const auditService = require('./audit-service');
 
-const { UnauthorizedError, ValidationError } = require('../errors');
+const { AuthorizationError, ValidationError } = require('../errors');
 
 const refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION || '1h';
 const refreshTokenExpirationSeconds = process.env.REFRESH_TOKEN_EXPIRATION_SECONDS || '3600'; //default 1 hr
@@ -48,13 +48,13 @@ class AuthService {
         try {
             user = await userService.getUserByPhoneNumber(phoneNumber);
         } catch (e) {
-            throw new UnauthorizedError('Phone number and PIN did not match.');
+            throw new ValidationError('Phone number and PIN did not match.');
         }
 
         // Validate pin hash
         const pinMatch = bcrypt.compareSync(pin, user.pin);
         if (!pinMatch) {
-            throw new UnauthorizedError('Phone number and PIN did not match.');
+            throw new ValidationError('Phone number and PIN did not match.');
         }
 
         const token = RandomToken.gen({ length: 7, seed: 'number' });
@@ -107,7 +107,7 @@ class AuthService {
         try {
             return jwt.verify(accessToken, accessTokenSecret)
         } catch {
-            throw new UnauthorizedError('User is unauthenticated.');
+            throw new ValidationError('User is unauthenticated.');
         }
     }
 
@@ -120,13 +120,13 @@ class AuthService {
         try {
             claims = jwt.verify(refreshToken, refreshTokenSecret);
         } catch {
-            throw new UnauthorizedError('User is not authorized.');
+            throw new ('User is not authorized.');
         }
 
         // Make sure the refresh token was not invalidated via logout.
         const storedToken = await this._refreshTokenCache.get(claims.userId);
         if (!storedToken) {
-            throw new UnauthorizedError('User is not authorized.');
+            throw new AuthorizationError('User is not authorized.');
         }
 
         const user = await userService.getUserById(claims.userId);

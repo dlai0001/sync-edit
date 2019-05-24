@@ -115,7 +115,7 @@ export default class AuthContainer extends Container {
             console.debug('Error refreshing tokens', err);
 
             // remove our bad tokens and skip retrying if we are getting Unauthorized Errors
-            if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='UnauthorizedError')) {
+            if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='UnauthenticatedError')) {
                 localStorage.removeItem(REFRESH_TOKEN_LOCALSTORAGE_KEY);
                 this.setState(INITIAL_STATE);
                 return;

@@ -12,7 +12,7 @@ const NotFoundError = createError('NotFoundError', {
     message: 'Unable to find entity.'
 });
 
-const UnauthorizedError = createError('UnauthorizedError', {
+const UnauthenticatedError = createError('UnauthenticatedError', {
     message: 'User is not authorized.'
 });
 
@@ -24,6 +24,6 @@ const ValidationError = createError('ValidationError', {
 module.exports = {
     AuthorizationError,
     NotFoundError,
-    UnauthorizedError,
+    UnauthenticatedError,
     ValidationError,    
 };

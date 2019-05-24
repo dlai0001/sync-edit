@@ -1,5 +1,5 @@
 const knex = require('../db');
-const { UnauthorizedError, ValidationError } = require('../errors');
+const { AuthorizationError, ValidationError } = require('../errors');
 const sinon = require('sinon');
 
 describe('auth-service', () => {
@@ -22,7 +22,7 @@ describe('auth-service', () => {
                 await authService.sendShortCode('805-555-5555', '0001');
                 throw new Error('Fail');
             } catch (err) {
-                return expect(err).toBeInstanceOf(UnauthorizedError);
+                return expect(err).toBeInstanceOf(ValidationError);
             }
         });
 
@@ -31,7 +31,7 @@ describe('auth-service', () => {
                 await authService.sendShortCode('805-555-5556', '0000');
                 throw new Error('Fail');
             } catch (err) {
-                return expect(err).toBeInstanceOf(UnauthorizedError);
+                return expect(err).toBeInstanceOf(ValidationError);
             }
         });
 
@@ -49,7 +49,7 @@ describe('auth-service', () => {
                 await authService.sendShortCode('805-555-5555', '0000');
                 throw new Error('Fail');
             } catch (err) {
-                return expect(err).toBeInstanceOf(UnauthorizedError);
+                return expect(err).toBeInstanceOf(ValidationError);
             }
         });
     });
@@ -113,10 +113,10 @@ describe('auth-service', () => {
             return expect(claims.userId).toBe('25795751-b418-480c-a09b-9712069e8b31');
         });
 
-        it('should throw UnauthorizedError if token is invalid', () => {
+        it('should throw ValidationError if token is invalid', () => {
             return expect(() =>
                 authService.validateAccessToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTc5NTc1MS1iNDE4LTQ4MGMtYTA5Yi05NzEyMDY5ZThiMzEiLCJpYXQiOjE1NTgyOTA5MTYsImV4cCI6MTU1ODI5MTUxNn0.jPsPDol0Fb8g9-Mq6vs4gFlNQ6aaIB3llngeiDUdznA')
-            ).toThrow(UnauthorizedError);
+            ).toThrow(ValidationError);
         });
     });
 
@@ -142,7 +142,7 @@ describe('auth-service', () => {
             return expect(newTokens.refreshToken).toBeDefined();
         });
 
-        it('should throw UnauthorizedError if refreshing logged off token', async () => {
+        it('should throw AuthorizationError if refreshing logged off token', async () => {
             // authenticate with user setup in the seed file.
             await authService.sendShortCode('805-555-5555', '0000');
             const lastSms = getLastSms();
@@ -155,7 +155,7 @@ describe('auth-service', () => {
                 await authService.refreshTokens(tokens.refreshToken);
                 throw new Error('should not succeed');
             } catch (err) {
-                expect(err).toBeInstanceOf(UnauthorizedError);
+                expect(err).toBeInstanceOf(AuthorizationError);
             }
         });
     });

@@ -1,15 +1,27 @@
-const typeDefs = `
+const {gql} = require('apollo-boost');
+
+const typeDefs = gql`
+    directive @isAuthenticated on FIELD | FIELD_DEFINITION
+    
     type User {
         id: ID!,
         name: String,
         phoneNumber: String
     }
 
+    """ 
+    Token pair contains a short lived accessToken, 
+    and a refreshToken for renewing tokens when they 
+    expire. 
+    """
     type TokenPair {
         accessToken: String!,
         refreshToken: String!,
     }
 
+    """
+    Authentication profile, contains a user and tokens.
+    """
     type AuthProfile {
         user: User,
         tokens: TokenPair
@@ -31,9 +43,10 @@ const typeDefs = `
     }
 
     type Query {
-        hello(name: String): String!,
+        """ Hello Testing Query """
+        hello(name: String): String,
         username: String!
-    } 
+    }     
 
     type Mutation {
         authRegisterUser(name:String!, pin:String!, phoneNumber:String!): AuthProfile,
@@ -42,7 +55,7 @@ const typeDefs = `
         authAuthenticate(phoneNumber:String!, shortCode:String!) : AuthProfile,
         authLogout : Boolean,
 
-        recipeCreate(input: RecipeInput!) : Recipe!
+        recipeCreate(input: RecipeInput!) : Recipe! @isAuthenticated
     }
 `;
 

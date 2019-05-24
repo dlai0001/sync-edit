@@ -7,9 +7,11 @@ const express = require('express');
 const { GraphQLServer } = require('graphql-yoga');
 const { formatError } = require('apollo-errors');
 
-const typeDefs = require('./graphql/typedefs');
+const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
+const schemaDirectives = require('./graphql/schema-directives');
 const middleware = require('./graphql/middleware');
+const { gql } = require('apollo-boost');
 
 const GRAPHQL_PATHS = [
     '/playground',
@@ -20,6 +22,7 @@ const GRAPHQL_PATHS = [
 const graphqlserver = new GraphQLServer({ 
     typeDefs,
     resolvers,
+    schemaDirectives,
     context: middleware,
 });
 
