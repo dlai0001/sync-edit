@@ -226,6 +226,11 @@ export default class AuthContainer extends Container {
             console.debug(`Authentication successful. New state:`, newState);
         }).catch((err) => {
             console.error('Error during sending shortcode', err);
+
+            if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='ValidationError')) {
+                throw new Error('The code you entered is incorrect.  Please try again.');
+            }
+
             throw err;
         });
     }
