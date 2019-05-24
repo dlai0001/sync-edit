@@ -180,6 +180,11 @@ export default class AuthContainer extends Container {
             variables: { phoneNumber, pin },
         }).catch((err) => {
             console.error('Error during sending shortcode', err);
+
+            if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='ValidationError')) {
+                throw new Error('Either your Phone number or Pin is incorrect.  Please try again.');
+            }
+
             throw err;
         });
     }
