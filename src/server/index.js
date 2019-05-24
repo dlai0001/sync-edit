@@ -7,7 +7,7 @@ const express = require('express');
 const { GraphQLServer } = require('graphql-yoga');
 const { formatError } = require('apollo-errors');
 
-const typeDefs = require('./graphql/typeDefs');
+const typeDefs = require('./graphql/typedefs');
 const resolvers = require('./graphql/resolvers');
 const schemaDirectives = require('./graphql/schema-directives');
 const middleware = require('./graphql/middleware');
