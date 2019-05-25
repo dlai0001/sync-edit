@@ -1,11 +1,9 @@
 const {gql} = require('apollo-boost');
 
-const typeDefs = gql`
-    """
-    Directive to block access if not authenticated.
-    """
+const typeDefs = gql`    
     directive @isAuthenticated on FIELD | FIELD_DEFINITION
-    
+    directive @rateLimit(pointsPerRequest:Float!, initialPoints:Float) on FIELD_DEFINITION
+
     """
     User type
     """
@@ -73,7 +71,7 @@ const typeDefs = gql`
         """
         Request SMS short code
         """
-        authRequestShortCode(phoneNumber:String!, pin:String!): Boolean
+        authRequestShortCode(phoneNumber:String!, pin:String!): Boolean @rateLimit(pointsPerRequest:10, initialPoints:60)
         """
         Authenticate using phone number and short code
         """

@@ -40,6 +40,7 @@
     "luxon": "^1.14.0",
     "node-cache": "^4.2.0",
     "pg": "^7.11.0",
+    "rate-limiter-flexible": "^1.0.1",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-router-dom": "^5.0.0",

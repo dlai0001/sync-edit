@@ -1,5 +1,4 @@
 const authService = require('../../services/auth-service');
-const { get } = require('lodash');
 
 /**
  * GraphQL middleware for adding claims from Authorization header

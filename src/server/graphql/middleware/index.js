@@ -2,6 +2,7 @@
 
 const middlewares = [
     require('./auth-middleware'),
+    require('./ip-address-middleware'),
 ];
 
 

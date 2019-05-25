@@ -183,6 +183,8 @@ export default class AuthContainer extends Container {
 
             if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='ValidationError')) {
                 throw new Error('Either your Phone number or Pin is incorrect.  Please try again.');
+            } else if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='RateLimitExceededError')) {
+                throw new Error('You have exceeded the rate limit.  Please wait before trying again.');
             }
 
             throw err;
@@ -229,6 +231,8 @@ export default class AuthContainer extends Container {
 
             if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='ValidationError')) {
                 throw new Error('The code you entered is incorrect.  Please try again.');
+            } else if(err.graphQLErrors && err.graphQLErrors.some(x=>x.name==='RateLimitExceededError')) {
+                throw new Error('You have exceeded the rate limit.  Please wait before trying again.');
             }
 
             throw err;

@@ -3,6 +3,8 @@ const userService = require('../services/user-service');
 const authService = require('../services/auth-service');
 const recipeService = require('../services/recipe-service');
 
+// Resolvers are functions in the form of:  (parentObj, args, context) => results
+
 const resolvers = {
     Query: {
         hello: (_, { name }) => `Hello ${name || 'World'}`,
@@ -45,7 +47,7 @@ const resolvers = {
 
             return {
                 ...newRecipe,
-                owner: () => userService.getUserById(authenticatedUser.userId),
+                owner: async () => await userService.getUserById(authenticatedUser.userId),
             };
         }
     }
