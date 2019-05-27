@@ -188,7 +188,7 @@ class Login extends React.Component {
                                             </p>
                                             <p className="control">
                                                 <button type="submit"
-                                                    className={"button is-primary " + (props.isSubmitting ? 'is-loading' : '')}
+                                                    className={"button is-secondary " + (props.isSubmitting ? 'is-loading' : '')}
                                                     onClick={() => {
                                                         props.setFieldValue('action', 'resend');
                                                         props.submitForm();
@@ -204,7 +204,7 @@ class Login extends React.Component {
                                                 className="is-link is-secondary">
                                                 Re-Enter Phone Number
                                             </a>
-                                        </div>
+                                        </div>                                        
                                         {process.env.DEBUG && (
                                             <div className="field">
                                                 DEBUG IS ON: You can enter '0000000' as the confirmation code.

@@ -2,7 +2,7 @@ import { Container } from 'unstated';
 import { get } from 'lodash';
 import { decode } from 'jsonwebtoken';
 import { gql } from 'apollo-boost';
-import { getGraphqlClient, setClientAccessToken } from '../web-services/graphql-client';
+import { getGraphqlClient, setClientAccessToken } from '../web-services/graphql-service';
 
 const REFRESH_TOKEN_LOCALSTORAGE_KEY = 'REFRESH_TOKEN';
 

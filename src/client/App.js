@@ -8,6 +8,7 @@ import Home from './containers/Home';
 import SignUp from './containers/SignUp';
 import NotFound from './containers/NotFound';
 import Dashboard from './containers/Dashboard';
+import NewRecipe from './containers/NewRecipe';
 import Login from './containers/Login';
 
 export default () => (    
@@ -18,6 +19,7 @@ export default () => (
             <Route path="/signup" component={SignUp}/>
             <Route path="/dashboard" component={Dashboard}/>
             <Route path="/login" component={Login}/>
+            <Route path="/new-recipe" component={Login}/>
             <Route component={NotFound}/>
         </Switch>
     </React.Fragment>

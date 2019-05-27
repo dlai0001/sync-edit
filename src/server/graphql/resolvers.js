@@ -29,9 +29,9 @@ const resolvers = {
             // tokens must succeed before other resolvers can run to ensure
             // phoneNumber/shortCode matches.
             const tokens = await authService.authenticate(phoneNumber, shortCode);
-
+            
             return {
-                user: async () => userService.getUserByPhoneNumber(phoneNumber),
+                user: async () => await userService.getUserByPhoneNumber(phoneNumber),
                 tokens,
             }
         },
